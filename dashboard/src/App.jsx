@@ -9,6 +9,7 @@ import AlertLog from './components/AlertLog';
 import SimulationPanel from './components/SimulationPanel';
 import MetricGlossary from './components/MetricGlossary';
 import SimulationView from './SimulationView';
+import AssistantView from './AssistantView';
 
 function StatusDot({ status }) {
   const colors = { connected: '#10b981', connecting: '#f59e0b', disconnected: '#ef4444' };
@@ -99,6 +100,22 @@ export default function App() {
           >
             3D SİMÜLASYON
           </button>
+          <button
+            onClick={() => setViewMode('assistant')}
+            style={{
+              padding: '7px 16px',
+              fontSize: 11,
+              fontWeight: 600,
+              border: 'none',
+              cursor: 'pointer',
+              background: viewMode === 'assistant' ? 'rgba(56,189,248,0.25)' : 'transparent',
+              color: viewMode === 'assistant' ? '#38bdf8' : '#7c889e',
+              transition: 'all 0.2s',
+              letterSpacing: 1,
+            }}
+          >
+            AI ASISTAN
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
@@ -117,6 +134,11 @@ export default function App() {
       {/* 3D Simulation View */}
       {viewMode === '3d' && (
         <SimulationView data={data} connectionStatus={connectionStatus} />
+      )}
+
+      {/* AI Assistant View */}
+      {viewMode === 'assistant' && (
+        <AssistantView data={data} connectionStatus={connectionStatus} />
       )}
 
       {/* Dashboard View */}

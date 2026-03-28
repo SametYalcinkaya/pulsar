@@ -24,6 +24,7 @@ class TickLoop:
         self._history: deque = deque(maxlen=HISTORY_MAX)
         self._running = False
         self._task: Optional[asyncio.Task] = None
+        self._last_payload: Optional[dict] = None
 
     def start(self) -> None:
         if not self._running:
@@ -81,6 +82,7 @@ class TickLoop:
             "timings_ms": result.timings_ms,
         }
 
+        self._last_payload = payload
         self._history.append(payload)
 
         # WS broadcast

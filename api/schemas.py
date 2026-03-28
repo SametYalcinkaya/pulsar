@@ -90,6 +90,14 @@ class EvidencePackage(BaseModel):
     signature: str
 
 
+class ChatRequest(BaseModel):
+    message: str
+
+
+class ChatResponse(BaseModel):
+    response: str
+
+
 class TickPayload(BaseModel):
     type: str = "tick"
     tick: int

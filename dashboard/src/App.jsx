@@ -8,6 +8,7 @@ import XAIPanel from './components/XAIPanel';
 import AlertLog from './components/AlertLog';
 import SimulationPanel from './components/SimulationPanel';
 import MetricGlossary from './components/MetricGlossary';
+import SimulationView from './SimulationView';
 
 function StatusDot({ status }) {
   const colors = { connected: '#10b981', connecting: '#f59e0b', disconnected: '#ef4444' };
@@ -24,6 +25,7 @@ function StatusDot({ status }) {
 export default function App() {
   const { data, history, connectionStatus } = useWebSocket();
   const [selectedEvidenceId, setSelectedEvidenceId] = useState(null);
+  const [viewMode, setViewMode] = useState('3d');
 
   const tick = data?.tick ?? 0;
   const trustScore = data?.trust_score ?? 96;
@@ -56,14 +58,49 @@ export default function App() {
             GNSS Saldırı Tespit Sistemi
           </span>
         </div>
+
+        {/* View Toggle */}
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '6px 12px', borderRadius: 999,
-          background: 'rgba(14,116,144,0.2)', border: '1px solid rgba(14,116,144,0.6)',
-          fontSize: 11, color: '#38bdf8',
+          display: 'flex', alignItems: 'center',
+          background: 'rgba(14,116,144,0.15)',
+          borderRadius: 999,
+          border: '1px solid rgba(14,116,144,0.4)',
+          overflow: 'hidden',
         }}>
-          Demo Modu: Sentetik GNSS
+          <button
+            onClick={() => setViewMode('dashboard')}
+            style={{
+              padding: '7px 16px',
+              fontSize: 11,
+              fontWeight: 600,
+              border: 'none',
+              cursor: 'pointer',
+              background: viewMode === 'dashboard' ? 'rgba(56,189,248,0.25)' : 'transparent',
+              color: viewMode === 'dashboard' ? '#38bdf8' : '#7c889e',
+              transition: 'all 0.2s',
+              letterSpacing: 1,
+            }}
+          >
+            DASHBOARD
+          </button>
+          <button
+            onClick={() => setViewMode('3d')}
+            style={{
+              padding: '7px 16px',
+              fontSize: 11,
+              fontWeight: 600,
+              border: 'none',
+              cursor: 'pointer',
+              background: viewMode === '3d' ? 'rgba(56,189,248,0.25)' : 'transparent',
+              color: viewMode === '3d' ? '#38bdf8' : '#7c889e',
+              transition: 'all 0.2s',
+              letterSpacing: 1,
+            }}
+          >
+            3D SİMÜLASYON
+          </button>
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Tick #{tick}</span>
           <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
@@ -77,36 +114,43 @@ export default function App() {
         </div>
       </div>
 
-      {/* Ana Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '260px 1fr 300px',
-        gap: 16,
-        alignItems: 'start',
-      }}>
-        {/* Sol sütun */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <SimulationPanel data={data} />
-          <TrustGauge score={trustScore} threatLevel={threatLevel} attackType={attackType} />
-          <XAIPanel data={data} selectedEvidenceId={selectedEvidenceId} />
-        </div>
+      {/* 3D Simulation View */}
+      {viewMode === '3d' && (
+        <SimulationView data={data} connectionStatus={connectionStatus} />
+      )}
 
-        {/* Orta sütun */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <SignalCharts history={history} isAttackActive={isAttackActive} />
-          <LayerStatus data={data} />
-        </div>
+      {/* Dashboard View */}
+      {viewMode === 'dashboard' && (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '260px 1fr 300px',
+          gap: 16,
+          alignItems: 'start',
+        }}>
+          {/* Sol sütun */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <SimulationPanel data={data} />
+            <TrustGauge score={trustScore} threatLevel={threatLevel} attackType={attackType} />
+            <XAIPanel data={data} selectedEvidenceId={selectedEvidenceId} />
+          </div>
 
-        {/* Sağ sütun */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <AttackControls activeAttack={activeAttack} />
-          <MetricGlossary />
-          <AlertLog
-            onSelectEvidence={setSelectedEvidenceId}
-            selectedEvidenceId={selectedEvidenceId}
-          />
+          {/* Orta sütun */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <SignalCharts history={history} isAttackActive={isAttackActive} />
+            <LayerStatus data={data} />
+          </div>
+
+          {/* Sağ sütun */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <AttackControls activeAttack={activeAttack} />
+            <MetricGlossary />
+            <AlertLog
+              onSelectEvidence={setSelectedEvidenceId}
+              selectedEvidenceId={selectedEvidenceId}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

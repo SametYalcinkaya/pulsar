@@ -1,0 +1,30 @@
+simulation:
+  tick_interval_ms: 500
+  start_lat: 41.0082
+  start_lon: 28.9784
+  start_alt: 50.0
+
+detection:
+  physics_weight: 0.40
+  stats_weight: 0.35
+  ml_weight: 0.25
+  rolling_window: 20
+  warmup_ticks: 200
+  ml_update_interval: 50
+
+thresholds:
+  position_discrepancy_m: 15.0
+  max_speed_kmh: 300.0
+  ntp_suspicious_ms: 200.0
+  ntp_critical_ms: 1000.0
+  satellite_drop_window: 5
+  satellite_drop_count: 4
+  baro_suspicious_m: 50.0
+  gdop_bad: 6.0
+  snr_zscore: 3.0
+  doppler_velocity_diff_ms: 5.0
+
+trust_score:
+  safe_min: 80
+  warning_min: 50
+  threat_min: 20

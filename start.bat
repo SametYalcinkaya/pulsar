@@ -1,33 +1,22 @@
 @echo off
-setlocal
+echo Starting PULSAR Setup...
 
-echo [1/4] Python sanal ortami hazirlaniyor...
 if not exist .venv\Scripts\activate.bat (
-    echo  > Sanal ortam olusturuluyor...
+    echo Creating virtual environment...
     python -m venv .venv
 )
-call .\.venv\Scripts\activate.bat
 
-echo.
-echo [2/4] Python bagimliliklari yukleniyor...
+call .venv\Scripts\activate.bat
+echo Installing requirements...
 pip install -r requirements.txt
 
-echo.
-echo [3/4] Backend sunucusu baslatiliyor (http://localhost:8000)
-start "PULSAR Backend" cmd /k "call .\.venv\Scripts\activate.bat && uvicorn api.main:app --reload"
+echo Starting Backend...
+start "PULSAR Backend" cmd /k "call .venv\Scripts\activate.bat && uvicorn api.main:app --reload"
 
-timeout /t 5 > nul
+echo Starting Dashboard...
+cd dashboard
+call npm install
+start "PULSAR Dashboard" cmd /k "npm run dev"
+cd ..
 
-echo.
-echo [4/4] Frontend (Dashboard) baslatiliyor (http://localhost:5173)
-start "PULSAR Dashboard" cmd /k "cd dashboard && npm install && npm run dev"
-
-echo.
-echo =================================================
-echo  Sistem baslatildi!
-echo.
-echo  o Backend:   http://localhost:8000
-echo  o Dashboard: http://localhost:5173
-echo =================================================
-echo.
-pause
+echo Start script completed. Checks logs in the opened windows.

@@ -41,7 +41,7 @@ class RuleExplainer:
             explanations.insert(0, attack_explanation)
 
         if not explanations:
-            explanations = ["Tüm sensör verileri normal aralıkta. Sistem güvende."]
+            explanations = [{"text": "Tüm sensör verileri normal aralıkta. Sistem güvende.", "confidence_percent": 100, "category": "info", "raw": ""}]
 
         return {
             "explanations": explanations,
